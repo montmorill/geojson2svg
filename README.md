@@ -1,8 +1,7 @@
 # geojson2svg
 Converts GeoJSON to an SVG string, given the SVG viewport size and map extent. geojson2svg can be used on the client side (in the browser) or server side (with Node.js).
 
-Check [world map](https://rawgit.com/gagan-bansal/geojson2svg/master/examples/world.html), [SVG scaled map](https://rawgit.com/gagan-bansal/geojson2svg/master/examples/world-scaled.html) and [color coded map](https://rawgit.com/gagan-bansal/geojson2svg/master/examples/world-pop.html) examples to demonstrate that its very easy to convert GeoJSON into map.
-
+Check [world map](https://gagan-bansal.github.io/geojson2svg/examples/world.html), [SVG scaled map](https://gagan-bansal.github.io/geojson2svg/examples/world-scaled.html) and [color coded map](https://gagan-bansal.github.io/geojson2svg/examples/world-pop.html) examples to demonstrate that its very easy to convert GeoJSON into map.
  🛠 [Installation](#-installation)  
  :car: [Usage](#car-usage)  
  :popcorn: [Basic Example](#popcorn-basic-example)  
