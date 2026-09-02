@@ -1,4 +1,5 @@
 # geojson2svg
+
 Converts GeoJSON to an SVG string, given the SVG viewport size and map extent. geojson2svg can be used on the client side (in the browser) or server side (with Node.js).
 
 Check [world map](https://gagan-bansal.github.io/geojson2svg/examples/world.html), [SVG scaled map](https://gagan-bansal.github.io/geojson2svg/examples/world-scaled.html) and [color coded map](https://gagan-bansal.github.io/geojson2svg/examples/world-pop.html) examples to demonstrate that its very easy to convert GeoJSON into map.
@@ -13,25 +14,33 @@ Check [world map](https://gagan-bansal.github.io/geojson2svg/examples/world.html
  🔗 [Related useful articles](#-related-useful-articles)  
 
 ## 🛠 Installation
+
 * Using in node.js
+
   ```
   npm install geojson2svg
   ```
+
 * For including in html page, download the build file [./dist/geojson2svg.min.js](https://raw.githubusercontent.com/gagan-bansal/geojson2svg/master/dist/geojson2svg.min.js)
+
   ```html
   <script type="text/javascript" src="path/to/geojson2svg.min.js"></script>
   ```
+
   This creates a global variable 'GeoJSON2SVG' as a Class.
 
 * geojson2svg is also available on [cdnjs](https://cdnjs.com/libraries/geojson2svg) and can be included like:
+
   ```html
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/geojson2svg/x.x.x/geojson2svg.min.js"></script>
   ```
 
 ## :car: Usage
+
 * Using with node.js
 
   With ES6
+
   ```javascript
   import {GeoJSON2SVG} from 'geojson2svg';
   const converter = new GeoJSON2SVG(options);
@@ -39,18 +48,22 @@ Check [world map](https://gagan-bansal.github.io/geojson2svg/examples/world.html
   ```
 
   With CommonJS
+
   ```javascript
   const {GeoJSON2SVG} = require('geojson2svg');
   const converter = new GeoJSON2SVG(options);
   const svgStrings = converter.convert(geojson, options);
   ```
+
 * Usage in browser:
+
   ```
   const converter = new GeoJSON2SVG(options);
   const svgStrings = converter.convert(geojson,options);
   ```
 
 ## :popcorn: Basic Example
+
 ```javascript
 const {GeoJSON2SVG} = require('geojson2svg');
 
@@ -95,6 +108,7 @@ console.log(svgStr);
 //   '<path d="M116.66666666666666,44.44444444444444 122.22222222222221,27.77777777777778 111.11111111111111,27.77777777777778 105.55555555555556,38.888888888888886 116.66666666666666,44.44444444444444" class="polygon-pond" foo="val-3" id="pg-1"/>'
 // ]
 ```
+
 **convert** function returns an array of SVG elements' strings.
 
 ## ✈️ Migration from 1.x to 2.x
@@ -102,6 +116,7 @@ console.log(svgStr);
 * Default export as a function is removed. Now `geojson2svg` exports class `GeoJSON2SVG`.
 
   With 1.x
+
   ```javascript
   const geojson2svg = require('geojson2svg');
   const converter = geojson2svg(options);
@@ -120,7 +135,6 @@ console.log(svgStr);
     const converter = new GeoJSON2SVG(options);
   ```
 
-
 * Default value of `mapExtent` in 1.x was Web Mercator projection's full extent. In 2.x if `mapExtent` is not provided the `mapExtentFromGeoJSON` is considered to be true, that means the extent of the input data is considered as `mapExtent`.
 
 * There is only one case (from 1.x to 2.x) for which your existing code would fail, the input GeoJSON data projection system is Web Mercator and you have not specified `mapExtent`. So to work with 2.x just pass the `mapExtent` as [Web Mercator extent](https://gis.stackexchange.com/a/280022/12962)
@@ -134,7 +148,6 @@ const converter = new GeoJSON2SVG(options);
 ```
 
 Here are all options available for initializing the instance.
-
 
 * **viewportSize** is object containing width and height in pixels. Default viewportSize value is: `{width: 256, height: 256}`
 * **mapExtent:** {"left": coordinate, "bottom": coordinate, "right": coordinate, "top": coordinate}. Coordinates should be in same projection as of GeoJSON data. <ins>**NOTE: If `mapExtent` is not defined, the parameter `mapExtentFromGeojson` is considered `true`.**</ins>
@@ -152,11 +165,11 @@ Here are all options available for initializing the instance.
 
 * **attributes:**  Attributes which are required to attach as SVG attributes from features can be passed here as list of path in feature or json object for static attributes, like shown here
 
-    **dynamic**  ``` {"attributes": ["properties.foo", "properties.bar"]}```
+    **dynamic**  ```{"attributes": ["properties.foo", "properties.bar"]}```
 
     output: ``` [<path foo="fooVal-1"  bar="barVal-1" d="M0,0 20,10 106,40"/>] ```
 
-    or **static** ``` {"attributes": {"class": "mapstyle"}}```
+    or **static** ```{"attributes": {"class": "mapstyle"}}```
 
     outut: ```'<path class="mapstyle" d="M0,0 20,10 106,40"/>'```
 
@@ -177,9 +190,7 @@ Here are all options available for initializing the instance.
         }]
       })
 
-
     output: ``` [ '<path d="M128,128 128.00638801979818,127.99361198020182" id="fooVal-1" baz="bazVal-1" bar="barStatic"/>'] ```
-
 
     **Note**: If a feature does not have value at the mentioned path then the attribute key would not be attached to SVG string and no error would be thrown.
 
@@ -193,6 +204,7 @@ Here are all options available for initializing the instance.
     'path' - path 'd' value is returned ```'M0,0 20,10 106,40'``` a linestring
 
 * **callback:** function, accept function that will be called on every GeoJSON conversion with output string as one input variable e.g:
+
    ```
    { "callback": function(svgString) {
      // do something with svgString
@@ -220,9 +232,9 @@ let svgStrings = convertor.convert(geojson,
 ## 📌 Important points
 
 * **Coordinate projection:** this library does not automatically project GeoJSON coordinates. If your input GeoJSON and `mapExtent` coordinates are in [WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System) (World Geodetic System) you should provide a `coordinateConverter` function to project the coordinate values to a system such as Web Mercator projection ('EPSG:3857') also known as Spherical Mercator. Web Mercator projection is used by many web mapping sites (OpenStreetMap, Google, Bing, and others). Geographic coordinates can be converted to Web Mercator Projection using packages like:
-    * [reproject-spherical-mercator](https://github.com/geosquare/reproject-spherical-mercator)
-    * [reproject](https://github.com/perliedman/reproject)
-    * [proj4js](https://github.com/proj4js/proj4js)
+  * [reproject-spherical-mercator](https://github.com/geosquare/reproject-spherical-mercator)
+  * [reproject](https://github.com/perliedman/reproject)
+  * [proj4js](https://github.com/proj4js/proj4js)
 
     Check [world map](https://github.com/gagan-bansal/geojson2svg/blob/master/examples/js/world.js) example for detail.
 
@@ -233,10 +245,13 @@ let svgStrings = convertor.convert(geojson,
   ```shell
   npm install parse-svg
   ```
+
   or include in your html file
+
   ```html
   <script type="text/javascript" src="path/to/parse-svg.min.js"></script>
   ```
+
   Simple way to convert svgStrings to SVG elements
 
   ```javascript
@@ -245,6 +260,7 @@ let svgStrings = convertor.convert(geojson,
   ```
 
 ## 📋 Changelog
+
 Check [here](https://github.com/gagan-bansal/geojson2svg/blob/master/CHANGELOG.md)
 
 ## 🪪 License
