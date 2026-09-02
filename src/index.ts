@@ -157,7 +157,19 @@ export class GeoJSON2SVG {
     if (!feature && !(feature as Feature).geometry)
       return undefined as never
     const opt = deepMerge({}, this.options, options || {}) as Options
-    if (opt.attributes && Array.isArray(opt.attributes)) {
+    if (opt.attributes === true) {
+      // pass through all feature properties as attributes
+      const props = feature.properties
+      const attrs: ObjectAttributes = {}
+      if (props) {
+        for (const key in props) {
+          if (Object.hasOwn(props, key) && props[key] !== undefined)
+            attrs[key] = props[key]
+        }
+      }
+      opt.attributes = attrs
+    }
+    else if (opt.attributes && Array.isArray(opt.attributes)) {
       const arr = opt.attributes
       opt.attributes = arr.reduce<ObjectAttributes>((sum, property) => {
         if (typeof property === 'string') {
@@ -219,16 +231,16 @@ export class GeoJSON2SVG {
         origin.y += (res * this.viewportSize.height - (extent.top - extent.bottom)) / 2
       }
       const paths = converter[geom.type](geom, res, origin, opt)
+      const attrs = opt.attributes
+        && typeof opt.attributes === 'object'
+        && !Array.isArray(opt.attributes)
+        ? (opt.attributes as ObjectAttributes)
+        : {}
       let svgJsons: ObjectAttributes[]
       let svgEles: string[]
       if (output.toLowerCase() === 'svg') {
         svgJsons = paths.map((path) => {
-          return pathToSvgJson(
-            path,
-            geom.type,
-            (opt.attributes || {}) as ObjectAttributes,
-            opt,
-          )
+          return pathToSvgJson(path, geom.type, attrs, opt)
         })
         svgEles = svgJsons.map((json) => {
           return jsonToSvgElement(json, geom.type, opt)
@@ -262,14 +274,13 @@ function pathToSvgJson(
   }
   else {
     svg = { d: path }
-    if (type === 'Polygon' || type === 'MultiPolygon') {
-      // preserved no-op from the CJS source: comparison, not assignment.
-      // fill-rule is intentionally NOT emitted.
-      // eslint-disable-next-line ts/no-unused-expressions
-      svg['fill-rule'] === 'evenodd'
-    }
+    if (type === 'Polygon' || type === 'MultiPolygon')
+      svg['fill-rule'] = 'evenodd'
   }
   for (const key in attributes) {
+    // geometry attributes are not overridable through user attributes
+    if (key === 'd' || key === 'cx' || key === 'cy' || key === 'r')
+      continue
     svg[key] = attributes[key]
   }
   return svg
@@ -284,10 +295,18 @@ function jsonToSvgElement(json: ObjectAttributes, type: string, opt: Options): s
     ele = '<circle'
   }
   for (const key in json) {
-    ele += ` ${key}="${json[key]}"`
+    ele += ` ${key}="${escapeXml(String(json[key]))}"`
   }
   ele += '/>'
   return ele
+}
+
+function escapeXml(value: string): string {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
 }
 
 function valueAt(obj: Record<string, any>, path: string): any {

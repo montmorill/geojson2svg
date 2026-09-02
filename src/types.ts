@@ -74,8 +74,8 @@ export interface Options {
   /** Should multigeojson be exploded to many svg elements or not. default is false. */
   explode?: boolean
 
-  /** Attributes which are required to attach as SVG attributes from features can be passed here as list of path in feature or json object for static attributes */
-  attributes?: (string | StaticAttribute | DynamicAttribute | ObjectAttributes)[] | ObjectAttributes
+  /** Attributes which are required to attach as SVG attributes from features can be passed here as list of path in feature or json object for static attributes. Pass `true` to attach all feature properties as attributes. */
+  attributes?: (string | StaticAttribute | DynamicAttribute | ObjectAttributes)[] | ObjectAttributes | true
 
   /** Return geojson point objects as SVG circle elements. default is false. */
   pointAsCircle?: boolean

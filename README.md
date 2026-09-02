@@ -180,6 +180,14 @@ Here are all options available for initializing the instance.
 
   **Note**: If a feature does not have value at the mentioned path then the attribute key would not be attached to SVG string and no error would be thrown.
 
+  Pass `true` to attach all feature properties as SVG attributes:
+
+  ```js
+  const options = { attributes: true }
+  ```
+
+  Values are stringified as-is (`null` becomes `"null"`), `undefined` values are skipped, and attribute values are XML escaped.
+
 - **explode:** true | false, default is false. Should multigeojson be exploded to many SVG elements or not.
 
 - **precision** number, precision of output SVG coordinates. Default is false.
@@ -221,6 +229,8 @@ const svgStrings = convertor.convert(geojson, {
   - [reproject-spherical-mercator](https://github.com/geosquare/reproject-spherical-mercator)
   - [reproject](https://github.com/perliedman/reproject)
   - [proj4js](https://github.com/proj4js/proj4js)
+
+- **Polygon holes:** `Polygon` and `MultiPolygon` SVG elements automatically get `fill-rule="evenodd"` so holes render correctly. A `fill-rule` passed through `attributes` overrides it.
 
 - **Assigning id to SVG path,** there are two ways to achieve this. The first is default, the converter reads it from GeoJSON data attributes `feature.properties.id` or `feature.id`. Another way is explicitly specify the `id` attributes in `.convert` method, pass id along with attributes like `converter.convert(feature, {attributes: {id:'foo-1', class: 'bar'}})`. Preference order is: first as `id` key in attributes then `feature.id` and last `feature.properties.id`.
 

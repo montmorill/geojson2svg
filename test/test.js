@@ -169,6 +169,71 @@ describe('geojson2svg', () => {
       // centered horizontally: x from 150 to 250
       expect(actualPaths).to.be.deep.equal(['M150,100 250,0'])
     })
+    it('attributes true: pass through all feature properties', () => {
+      const converter = new GeoJSON2SVG({
+        mapExtent: testData.mercatorExtent,
+        attributes: true,
+      })
+      const svgStr = converter.convert({
+        type: 'FeatureCollection',
+        features: [{
+          type: 'Feature',
+          geometry: { type: 'LineString', coordinates: [[0, 0], [1000, 1000]] },
+          properties: { foo: 'fooVal-1', num: 10, flag: false, nil: null, missing: undefined },
+        }, {
+          type: 'Feature',
+          geometry: { type: 'LineString', coordinates: [[10, 10], [100, 100]] },
+          properties: { foo: 'fooVal-2', nested: { a: 1 } },
+        }],
+      })
+      const svgEle1 = string2dom(svgStr[0])
+      expect(svgEle1.getAttribute('foo')).to.be.equal('fooVal-1')
+      expect(svgEle1.getAttribute('num')).to.be.equal('10')
+      expect(svgEle1.getAttribute('flag')).to.be.equal('false')
+      expect(svgEle1.getAttribute('nil')).to.be.equal('null')
+      expect(svgEle1.hasAttribute('missing')).to.equal(false)
+      const svgEle2 = string2dom(svgStr[1])
+      expect(svgEle2.getAttribute('foo')).to.be.equal('fooVal-2')
+      expect(svgEle2.hasAttribute('num')).to.equal(false)
+      expect(svgEle2.getAttribute('nested')).to.be.equal('[object Object]')
+    })
+    it('attributes do not override geometry attributes', () => {
+      const converter = new GeoJSON2SVG(testData.options)
+      const svgStr = converter.convert(
+        { type: 'LineString', coordinates: [[10, 10], [15, 20], [30, 10]] },
+        { attributes: { d: 'overridden', class: 'foo' } },
+      )
+      const ele = string2dom(svgStr)
+      expect(ele.getAttribute('d')).to.be.equal('M105.55555555555556,44.44444444444444 108.33333333333333,38.888888888888886 116.66666666666666,44.44444444444444')
+      expect(ele.getAttribute('class')).to.be.equal('foo')
+    })
+    it('svg attribute values are XML escaped', () => {
+      const converter = new GeoJSON2SVG(testData.options)
+      const svgStr = converter.convert(
+        { type: 'LineString', coordinates: [[10, 10], [15, 20], [30, 10]] },
+        { attributes: { title: 'a"b&c<d>' } },
+      )
+      const ele = string2dom(svgStr)
+      expect(ele.getAttribute('title')).to.be.equal('a"b&c<d>')
+    })
+    it('polygon output has fill-rule evenodd', () => {
+      const converter = new GeoJSON2SVG(testData.options)
+      const svgStr = converter.convert(
+        { type: 'Polygon', coordinates: [[[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]]] },
+      )
+      const ele = string2dom(svgStr)
+      expect(ele.getAttribute('fill-rule')).to.be.equal('evenodd')
+    })
+    it('array attributes are ignored for plain geometry', () => {
+      const converter = new GeoJSON2SVG(testData.options)
+      const svgStr = converter.convert(
+        { type: 'LineString', coordinates: [[10, 10], [15, 20], [30, 10]] },
+        { attributes: ['properties.foo'] },
+      )
+      const ele = string2dom(svgStr)
+      expect(ele.hasAttribute('0')).to.equal(false)
+      expect(ele.attributes.length).to.be.equal(1)
+    })
 
     it('Add attributes to svg based on each feature properties:', () => {
       const converter = new GeoJSON2SVG({
