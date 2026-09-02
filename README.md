@@ -190,7 +190,7 @@ Here are all options available for initializing the instance.
 
 - **explode:** true | false, default is false. Should multigeojson be exploded to many SVG elements or not.
 
-- **precision** number, precision of output SVG coordinates. Default is false. A negative value rounds coordinates to the nearest power of 10, e.g. `-2` rounds to hundreds (`105.55` becomes `100`).
+- **precision** number, precision of output SVG coordinates. Default is false. A positive integer sets the number of decimal places. Any other value rounds coordinates to the nearest `10^(-precision)`: `-2` rounds to hundreds (`105.55` becomes `100`), `-1` to tens, and fractional values to fractional powers of 10 (e.g. `-0.5` rounds to steps of `10^0.5 ≈ 3.16`).
 - **output:** 'svg'|'path' default is 'svg'
 
   'svg' - SVG element string is returned like `'<path d="M0,0 20,10 106,40"/>'`

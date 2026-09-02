@@ -95,6 +95,16 @@ describe('geojson2svg', () => {
       const actualPaths2 = converter.convert(geojson, { output: 'path', precision: -2 })
       expect(actualPaths2).to.be.deep.equal(['M100,0 100,0 100,0'])
     })
+    it('Output svg coordinates precision with fractional value', () => {
+      const geojson = { type: 'LineString', coordinates: [[10, 10], [15, 20], [30, 10]] }
+      const converter = new GeoJSON2SVG(testData.options)
+      // fractional precision rounds to the nearest 10^-precision:
+      // 0.5 -> step ~0.316, -0.5 -> step 10^0.5 ~3.16
+      const actualPaths = converter.convert(geojson, { output: 'path', precision: 0.5 })
+      expect(actualPaths).to.be.deep.equal(['M105.62007385,44.5881150084 108.466123744,38.8960152201 116.68804566,44.5881150084'])
+      const actualPaths2 = converter.convert(geojson, { output: 'path', precision: -0.5 })
+      expect(actualPaths2).to.be.deep.equal(['M104.355162786,44.2718872424 107.517440446,37.947331922 117.004273426,44.2718872424'])
+    })
     it('Feature {output: "path",explode: false}', () => {
       const actualPaths = converter.convert(testData.feature.geojson, { output: 'path', explode: false })
       assertPath(actualPaths, testData.feature.path, testData.feature.geojson.type, precision)

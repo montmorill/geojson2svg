@@ -35,11 +35,14 @@ function getCoordString(
 function formatCoordinate(value: number, precision: number | undefined): string {
   if (!precision)
     return String(value)
-  if (precision > 0)
+  if (precision > 0 && Number.isInteger(precision))
     return value.toFixed(precision)
-  // negative precision rounds to the nearest 10^-precision (tens, hundreds, ...)
+  // round to the nearest 10^-precision:
+  // negative integers -> tens/hundreds/..., fractional -> powers like 10^0.5
   const factor = 10 ** -precision
-  return String(Math.round(value / factor) * factor)
+  const rounded = Math.round(value / factor) * factor
+  // strip floating point noise introduced by fractional factors
+  return String(Number(rounded.toPrecision(12)))
 }
 
 function point(geom: Point, res: number, origin: Origin, opt: Options): string[] {
