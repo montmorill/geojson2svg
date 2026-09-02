@@ -7,8 +7,8 @@ import type {
   Polygon,
   Position,
 } from 'geojson'
-import type { Options, Origin } from './types'
-import { explode } from './utils'
+import type { Options, Origin } from './types.js'
+import { explode } from './utils.js'
 
 export type ConverterFn = (geom: any, res: number, origin: Origin, opt: Options) => string[]
 

@@ -1,7 +1,7 @@
 import type { Feature, GeoJSON, Geometry } from 'geojson'
-import type { Extent, ObjectAttributes, Options, Origin, ScreenDims } from './types'
-import { converter } from './converter'
-import { bbox, deepMerge } from './utils'
+import type { Extent, ObjectAttributes, Options, Origin, ScreenDims } from './types.js'
+import { converter } from './converter.js'
+import { bbox, deepMerge } from './utils.js'
 
 export type {
   DynamicAttribute,
@@ -11,7 +11,7 @@ export type {
   Origin,
   ScreenDims,
   StaticAttribute,
-} from './types'
+} from './types.js'
 
 type ExtentTuple = [number, number, number, number]
 

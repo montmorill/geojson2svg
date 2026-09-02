@@ -3,8 +3,8 @@ import merge from 'deepmerge'
 import { JSDOM } from 'jsdom'
 import parsePath from 'parse-svg-path'
 import proj4 from 'proj4'
-import { GeoJSON2SVG } from 'src'
-import testData from './testdata'
+import { GeoJSON2SVG } from '../dist/index.js'
+import testData from './testdata.js'
 
 const { expect, assert } = chai
 const basics = ['Point', 'LineString', 'Polygon', 'MultiPoint', 'MultiLineString', 'MultiPolygon']
