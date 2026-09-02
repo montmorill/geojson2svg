@@ -1,46 +1,58 @@
 {
   "name": "@montmorill/geojson2svg",
-  "version": "2.0.5",
   "type": "module",
+  "version": "2.0.5",
   "description": "Converts geojson to svg/path string given svg viewport size and maps extent.",
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
-  "scripts": {
-    "test": "mocha",
-    "changelog": "auto-changelog --commit-limit=false && git add ./CHANGELOG.md && git commit --amend",
-    "release:patch": "npm version patch && npm run changelog",
-    "release:minor": "npm version minor && npm run changelog",
-    "release:major": "npm version major && npm run changelog",
-    "watch": "mocha -w"
+  "author": "montmorill",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/montmorill/geojson2svg"
   },
   "keywords": [
     "maps",
     "geojson",
     "svg"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/montmorill/geojson2svg"
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
-  "author": "montmorill",
-  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "pretest": "npm run build",
+    "test": "mocha test/test.js",
+    "lint": "eslint .",
+    "watch": "tsc -w",
+    "changelog": "auto-changelog --commit-limit=false && git add ./CHANGELOG.md && git commit --amend",
+    "release:patch": "npm version patch && npm run changelog",
+    "release:minor": "npm version minor && npm run changelog",
+    "release:major": "npm version major && npm run changelog",
+    "prepublishOnly": "npm run lint && npm test"
+  },
   "dependencies": {
-    "extend": "^3.0.2",
-    "geojson-bbox": "^0.0.1",
-    "multigeojson": "~0.0.1"
+    "@types/geojson": "^7946.0.16"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^9.4.0",
     "auto-changelog": "^2.3.0",
-    "browserify": "~17.0.0",
     "chai": "~4.3.4",
     "deepmerge": "^4.2.2",
-    "exorcist": "^2.0.0",
+    "eslint": "^9.10.0",
     "jsdom": "^18.1.1",
     "mocha": "^10.1.0",
     "parse-svg-path": "~0.1.2",
     "proj4": "^2.9.0",
     "standard-version": "^9.3.2",
-    "uglify-js": "^3.13.3",
-    "watchify": "^4.0.0"
+    "typescript": "^5.9.0"
   }
 }
