@@ -68,7 +68,7 @@ export interface Options {
   /** Convert input GeoJSON coordinates while converting to SVG. This function should take coordinates of a point [x,y] and returns transformed point [x, y] */
   coordinateConverter?: (point: [number, number]) => [number, number]
 
-  /** a number, precision of output svg coordinates. */
+  /** a number, precision of output svg coordinates. A negative value rounds to the nearest power of 10 (e.g. -2 rounds to hundreds). */
   precision?: number
 
   /** Should multigeojson be exploded to many svg elements or not. default is false. */

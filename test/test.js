@@ -84,6 +84,17 @@ describe('geojson2svg', () => {
       expect(actualSVGs.length).to.be.equal(1)
       expect(actualSVGs).to.be.deep.equal(expSVGs)
     })
+    it('Output svg coordinates precision with negative value', () => {
+      const geojson = { type: 'LineString', coordinates: [[10, 10], [15, 20], [30, 10]] }
+      const converter = new GeoJSON2SVG(testData.options)
+      // precision -1 rounds to tens: x 105.55..,108.33..,116.66.. -> 110,110,120
+      // y 44.44..,38.88..,44.44.. -> 40,40,40
+      const actualPaths = converter.convert(geojson, { output: 'path', precision: -1 })
+      expect(actualPaths).to.be.deep.equal(['M110,40 110,40 120,40'])
+      // precision -2 rounds to hundreds: x -> 100,100,100, y -> 0,0,0
+      const actualPaths2 = converter.convert(geojson, { output: 'path', precision: -2 })
+      expect(actualPaths2).to.be.deep.equal(['M100,0 100,0 100,0'])
+    })
     it('Feature {output: "path",explode: false}', () => {
       const actualPaths = converter.convert(testData.feature.geojson, { output: 'path', explode: false })
       assertPath(actualPaths, testData.feature.path, testData.feature.geojson.type, precision)

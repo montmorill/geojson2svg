@@ -27,14 +27,19 @@ function getCoordString(
     return [(coord[0] - origin.x) / res, (origin.y - coord[1]) / res]
   })
   const coordStr = convertedCoords.map((coord) => {
-    if (precision) {
-      return `${coord[0].toFixed(precision)},${coord[1].toFixed(precision)}`
-    }
-    else {
-      return `${coord[0]},${coord[1]}`
-    }
+    return `${formatCoordinate(coord[0], precision)},${formatCoordinate(coord[1], precision)}`
   })
   return coordStr.join(' ')
+}
+
+function formatCoordinate(value: number, precision: number | undefined): string {
+  if (!precision)
+    return String(value)
+  if (precision > 0)
+    return value.toFixed(precision)
+  // negative precision rounds to the nearest 10^-precision (tens, hundreds, ...)
+  const factor = 10 ** -precision
+  return String(Math.round(value / factor) * factor)
 }
 
 function point(geom: Point, res: number, origin: Origin, opt: Options): string[] {
