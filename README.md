@@ -127,6 +127,7 @@ Here are all options available for initializing the instance.
 - **mapExtentFromGeojson:** boolean, if true `mapExtent` is calculated from GeoJSON data that is passed in `.convert` function.
 
 - **fitTo:** 'width' | 'height' Fit output SVG map to width or height. If nothing is provided, the program tries to fit the data within width or height so that full mapExtent is visible in viewport.
+- **center:** boolean, default is false. Center the converted content within the viewport instead of anchoring it to the top-left corner. With `fitTo`, the content is centered along the axis that does not fill the viewport (cropping evenly on both sides if it overflows).
 - **coordinateConverter:** 'function' to convert input GeoJSON coordinates while converting to SVG. This function should take coordinates of a point `[x,y]` and returns transformed point `[x, y]`.
 - **pointAsCircle:** true | false, default is false. For point GeoJSON return circle element for option:
 

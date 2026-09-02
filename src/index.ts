@@ -1,5 +1,5 @@
 import type { Feature, GeoJSON, Geometry } from 'geojson'
-import type { Extent, ObjectAttributes, Options, ScreenDims } from './types.js'
+import type { Extent, ObjectAttributes, Options, Origin, ScreenDims } from './types.js'
 import { converter } from './converter.js'
 import { bbox, deepMerge } from './utils.js'
 
@@ -210,12 +210,15 @@ export class GeoJSON2SVG {
     if (converter[geom.type]) {
       const opt = deepMerge({}, this.options, options || {}) as Options
       const output = opt.output || 'svg'
-      const paths = converter[geom.type](
-        geom,
-        this.res!,
-        { x: this.mapExtent!.left, y: this.mapExtent!.top },
-        opt,
-      )
+      const res = this.res!
+      const extent = this.mapExtent!
+      const origin: Origin = { x: extent.left, y: extent.top }
+      if (opt.center) {
+        // shift the origin so the converted content is centered within the viewport
+        origin.x -= (res * this.viewportSize.width - (extent.right - extent.left)) / 2
+        origin.y += (res * this.viewportSize.height - (extent.top - extent.bottom)) / 2
+      }
+      const paths = converter[geom.type](geom, res, origin, opt)
       let svgJsons: ObjectAttributes[]
       let svgEles: string[]
       if (output.toLowerCase() === 'svg') {

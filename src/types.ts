@@ -62,6 +62,9 @@ export interface Options {
   /** Fit ouput svg map to width or height. */
   fitTo?: 'width' | 'height'
 
+  /** Center the converted content within the viewport instead of anchoring it to the top-left corner. default is false. */
+  center?: boolean
+
   /** Convert input GeoJSON coordinates while converting to SVG. This function should take coordinates of a point [x,y] and returns transformed point [x, y] */
   coordinateConverter?: (point: [number, number]) => [number, number]
 

@@ -141,6 +141,34 @@ describe('geojson2svg', () => {
         precision,
       )
     })
+    it('center: content centered within viewport', () => {
+      const converter = new GeoJSON2SVG({
+        viewportSize: { width: 200, height: 100 },
+        mapExtent: { left: 0, bottom: 0, right: 100, top: 100 },
+        center: true,
+      })
+      const actualPaths = converter.convert(
+        { type: 'LineString', coordinates: [[0, 0], [100, 100]] },
+        { output: 'path' },
+      )
+      // extent 100x100 in viewport 200x100 -> content box 100x100 centered
+      // horizontally: x from 50 to 150, y from 0 to 100
+      expect(actualPaths).to.be.deep.equal(['M50,100 150,0'])
+    })
+    it('center with fitTo: the axis that does not fill the viewport is centered', () => {
+      const converter = new GeoJSON2SVG({
+        viewportSize: { width: 400, height: 100 },
+        mapExtent: { left: 0, bottom: 0, right: 100, top: 100 },
+        fitTo: 'height',
+      })
+      const actualPaths = converter.convert(
+        { type: 'LineString', coordinates: [[0, 0], [100, 100]] },
+        { output: 'path', center: true },
+      )
+      // fitTo height -> res = yres = 1, content 100x100 in viewport 400x100
+      // centered horizontally: x from 150 to 250
+      expect(actualPaths).to.be.deep.equal(['M150,100 250,0'])
+    })
 
     it('Add attributes to svg based on each feature properties:', () => {
       const converter = new GeoJSON2SVG({
